@@ -1,5 +1,7 @@
 SampleApp::Application.routes.draw do
+  match '/users/microposts', to: 'microposts#index', via: 'get'
   resources :users do
+    resources :microposts, only: [:index]
     member do
       get :following, :followers
     end
