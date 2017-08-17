@@ -37,9 +37,9 @@ class MicropostsController < ApplicationController
   end
 
   def update
-    if json_request?
-      @micropost = Micropost.find(params[:id])
+      @micropost = Micropost.find(params[:id]) if json_request?
     end
+
     if @micropost.update_attributes(micropost_params)
       flash[:success] = "Post updated"
       respond_to do |format|
