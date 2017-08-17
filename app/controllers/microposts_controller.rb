@@ -1,6 +1,7 @@
 class MicropostsController < ApplicationController
   before_action :signed_in_user, only: [:create, :destroy]
-  before_action :correct_user,   only: [:destroy, :edit, :update]
+  before_action :correct_user,   only: [:destroy, :edit, :update], unless: :json_request?
+
 
   def index
     user = if params[:user_id]
@@ -29,15 +30,26 @@ class MicropostsController < ApplicationController
 
   def edit
     @micropost = Micropost.find(params[:id])
+    respond_to do |format|
+      format.html 
+      format.json {render json: @micropost.to_json}
+    end
   end
 
   def update
-    if @micropost.update(micropost_params)
+    if json_request?
+      @micropost = Micropost.find(params[:id])
+    end
+    if @micropost.update_attributes(micropost_params)
       flash[:success] = "Post updated"
-      redirect_to root_url
+      respond_to do |format|
+        format.html { redirect_to root_url }
+        format.json {render json: @micropost.to_json}
+      end
     else
       render 'edit'
     end
+
   end
 
 
