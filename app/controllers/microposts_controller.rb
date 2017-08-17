@@ -1,6 +1,6 @@
 class MicropostsController < ApplicationController
   before_action :signed_in_user, only: [:create, :destroy]
-  before_action :correct_user,   only: :destroy
+  before_action :correct_user,   only: [:destroy, :edit]
 
   def index
     user = if params[:user_id]
@@ -26,6 +26,11 @@ class MicropostsController < ApplicationController
     @micropost.destroy
     redirect_to root_url
   end
+
+  def edit
+    @micropost = Micropost.find(params[:id])
+  end
+
 
   private
 
