@@ -10,9 +10,12 @@ class MicropostsController < ApplicationController
       current_user
     end
     render json: user.microposts.to_json
+
+  rescue ActiveRecord::RecordNotFound => e
+    render json: {error: e.message}, status: 404
   end
 
-  def create
+  def create 
     @micropost = current_user.microposts.build(micropost_params)
     if @micropost.save
       flash[:success] = "Micropost created!"
@@ -37,8 +40,7 @@ class MicropostsController < ApplicationController
   end
 
   def update
-      @micropost = Micropost.find(params[:id]) if json_request?
-    end
+    @micropost = Micropost.find(params[:id]) if json_request?
 
     if @micropost.update_attributes(micropost_params)
       flash[:success] = "Post updated"
